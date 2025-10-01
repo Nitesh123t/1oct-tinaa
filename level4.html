@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💖 Birthday Surprise 💖</title>
+<style>
+body {
+  margin:0;
+  font-family:'Comic Sans MS', cursive;
+  text-align:center;
+  overflow-x:hidden;
+}
+#gameArea, #level5 { min-height:100vh; padding:20px; box-sizing:border-box; }
+#level5 { display:none; background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.heart { position:absolute; font-size:30px; top:-50px; }
+#basket { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); font-size:50px; }
+#scoreBoard { position:absolute; top:20px; left:50%; transform:translateX(-50%); font-size:24px; color:white; text-shadow:1px 1px 3px #000; }
+#endMessage { position:absolute; top:40%; width:100%; font-size:36px; color:white; display:none; text-shadow:2px 2px 5px #ff69b4; }
+#endMessage button { margin-top: 20px; padding: 10px 20px; font-size: 20px; border:none; border-radius:10px; background:hotpink; color:white; cursor:pointer; }
+
+#options button {
+  display:block; margin:10px auto; padding:12px 25px;
+  border-radius:10px; background:hotpink; color:white; border:none; cursor:pointer;
+  font-size:16px; transition: transform 0.2s, box-shadow 0.2s;
+}
+#options button:hover { transform:scale(1.1); }
+#finalMessage { display:none; font-size:18px; color:white; text-shadow:2px 2px 5px #ff69b4; margin-top:30px; max-width:700px; margin-left:auto; margin-right:auto; line-height:1.6; }
+#wrongMessage { display:none; font-size:20px; color:red; margin-top:20px; }
+
+.floatingHeart { font-size:40px; animation: float 2s infinite ease-in-out; }
+@keyframes float { 0% { transform:translateY(0); } 50% { transform:translateY(-15px); } 100% { transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- LEVEL 4 -->
+<div id="gameArea">
+  <div id="scoreBoard">Score: 0</div>
+  <div id="basket">🧺</div>
+  <div id="endMessage">
+    🎉 You caught all my love! ❤️
+    <br><br>
+    <button onclick="goToLevel5()">Go to Level 5 ➡️</button>
+  </div>
+</div>
+
+<!-- LEVEL 5 -->
+<div id="level5">
+  <h1>For u my Doctor 💖</h1>
+  <p id="scenario"></p>
+  <div id="options"></div>
+  <div id="wrongMessage">❌ Some answers were wrong! Try again from the beginning. mera baccha ❌</div>
+  <div id="finalMessage">
+    🎉 Happy Birthday Dr. Tinaa! 💖🎂
+    <p>Meri pyari bevkulfi,
+        Aaj mere bacche ka birthday hai, aur main bas yehi chahunga ki tumhara din normal se zyada achha ho. Tum meri life ka ek important hissa ho, aur har din tumhare saath baatein karna, tumhari baatein sunna aur tumhare saath choti choti cheezein share karna mujhe genuinely khush karta hai. Tumhare saath rehkar main apna best version feel karna chahta hu aur tumhara saath mujhe calm aur comfort deta hai. Main chahta hu ki tum hamesha khush khush raho tumhe paresan dekhkar main paresan ho jata hu , Happy Birthday meri jaan! Tum meri zindagi me ek constant positivity ho aur main hamesha tumhari care aur support karunga.💞
+    </p>
+    <div class="floatingHeart">❤️</div>
+  </div>
+</div>
+
+<script>
+// ---------- LEVEL 4 ----------
+const basket = document.getElementById('basket');
+const gameArea = document.getElementById('gameArea');
+const scoreBoard = document.getElementById('scoreBoard');
+const endMessage = document.getElementById('endMessage');
+let hearts=[], score=0, gameTime=20;
+
+document.addEventListener('mousemove', e => {
+  basket.style.left = e.clientX - basket.offsetWidth/2 + 'px';
+});
+
+function createHeart(){
+  let heart = document.createElement('div');
+  heart.className='heart';
+  heart.innerHTML='❤️';
+  heart.style.left=Math.random()*(window.innerWidth-30)+'px';
+  gameArea.appendChild(heart);
+  hearts.push(heart);
+}
+
+function moveHearts(){
+  hearts.forEach((heart,index)=>{
+    let top=parseInt(heart.style.top||-50);
+    heart.style.top=top+4+'px';
+    let basketRect=basket.getBoundingClientRect();
+    let heartRect=heart.getBoundingClientRect();
+    if(!(heartRect.right<basketRect.left || heartRect.left>basketRect.right || heartRect.bottom<basketRect.top || heartRect.top>basketRect.bottom)){
+      score++; scoreBoard.innerText='Score: '+score;
+      heart.remove(); hearts.splice(index,1);
+    }
+    if(top>window.innerHeight){ heart.remove(); hearts.splice(index,1); }
+  });
+  requestAnimationFrame(moveHearts);
+}
+
+let heartInterval=setInterval(createHeart,500);
+moveHearts();
+setTimeout(()=>{
+  clearInterval(heartInterval); hearts.forEach(h=>h.remove()); endMessage.style.display='block';
+}, gameTime*1000);
+
+function goToLevel5(){
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('level5').style.display='block';
+}
+
+// ---------- LEVEL 5 ----------
+const questions = [
+  {
+    text: "Whenever you come near, my heart rate increases, cardiac output rises, and the ........... nervous system goes into overdrive. 🫀",
+    options: ["Sympathetic", "Parasympathetic", "Adrenal", "Vagus"],
+    answer: "Sympathetic"
+  },
+  {
+    text: "Every time you smile, my neurons in the mesolimbic pathway fire ......... signals. 🧠✨",
+    options: ["Dopamine", "Serotonin", "Norepinephrine", "Acetylcholine"],
+    answer: "Dopamine"
+  },
+  {
+    text: "Your presence triggers my adrenal medulla to secrete ............, my pancreas to regulate energy, and my hypothalamus to release oxytocin. 🔬💞",
+    options: ["Adrenaline", "Cortisol", "Oxytocin", "Thyroxine"],
+    answer: "Adrenaline"
+  },
+  {
+    text: "Whenever I run to see you, my skeletal ........... contract with perfect efficiency, tendons glide smoothly. 🦴💓",
+    options: ["Muscles", "Tendons", "Ligaments", "Bones"],
+    answer: "Muscles"
+  },
+  {
+    text: "Thinking of you increases ........... in my system, making me feel calm and connected. 🌸",
+    options: ["Oxytocin", "Cortisol", "Adrenaline", "Vasopressin"],
+    answer: "Oxytocin"
+  }
+];
+
+let current = 0;
+let correctCount = 0;
+
+function loadQuestion() {
+  if(current >= questions.length) {
+    if(correctCount === questions.length){
+      document.getElementById('scenario').style.display = "none";
+      document.getElementById('options').style.display = "none";
+      document.getElementById('finalMessage').style.display = "block";
+    } else {
+      document.getElementById('scenario').style.display = "none";
+      document.getElementById('options').style.display = "none";
+      document.getElementById('wrongMessage').style.display = "block";
+    }
+    return;
+  }
+
+  const q = questions[current];
+  document.getElementById('scenario').innerText = q.text;
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.innerText = opt;
+    btn.onclick = () => {
+      if(opt === q.answer) correctCount++;
+      current++;
+      loadQuestion();
+    };
+    optionsDiv.appendChild(btn);
+  });
+}
+
+// Start Level 5 quiz
+loadQuestion();
+</script>
+
+</body>
+</html>
